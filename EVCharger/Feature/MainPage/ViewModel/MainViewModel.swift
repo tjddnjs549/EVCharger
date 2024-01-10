@@ -10,8 +10,7 @@ import Foundation
 public class MainViewModel {
     
     
-    
     var numberOfRowsInSection: Int {
-        return 1
+        return 2
     }
 }

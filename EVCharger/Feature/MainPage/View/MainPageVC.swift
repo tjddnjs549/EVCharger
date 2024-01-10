@@ -14,12 +14,15 @@ final class MainPageViewController: UIViewController {
     
     // MARK: - properties
     
-    public var viewModel: MainViewModel!
+    public var viewModel: MainViewModel = MainViewModel()
     
     
     // MARK: - UIComponents
 
-    private let infoTableView = UITableView()
+    private let infoTableView = UITableView().then {
+        $0.backgroundColor = ColorGuide.white
+        $0.isScrollEnabled = true
+    }
     
     
     
@@ -27,6 +30,8 @@ final class MainPageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .red
+        tableviewSetting()
+        viewMakeUI()
     }
     
     
@@ -39,7 +44,17 @@ private extension MainPageViewController {
     func tableviewSetting() {
         infoTableView.delegate = self
         infoTableView.dataSource = self
+        infoTableView.estimatedRowHeight = UITableView.automaticDimension
+        infoTableView.rowHeight = UITableView.automaticDimension
         infoTableView.register(ChargerInfoTableViewCell.self, forCellReuseIdentifier: ChargerInfoTableViewCell.identifier)
+    }
+    
+    func viewMakeUI() {
+        view.addSubviews(infoTableView)
+        
+        infoTableView.snp.makeConstraints { make in
+            make.top.leading.trailing.bottom.equalToSuperview().inset(10)
+        }
     }
 }
 
