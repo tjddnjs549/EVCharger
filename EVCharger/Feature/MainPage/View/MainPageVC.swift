@@ -12,9 +12,13 @@ import Then
 final class MainPageViewController: UIViewController {
    
     
-    
-    
     // MARK: - properties
+    
+    public var viewModel: MainViewModel!
+    
+    
+    // MARK: - UIComponents
+
     private let infoTableView = UITableView()
     
     
@@ -29,8 +33,6 @@ final class MainPageViewController: UIViewController {
 }
 
 
-
-
 // MARK: - extension custom func
 private extension MainPageViewController {
     
@@ -40,9 +42,6 @@ private extension MainPageViewController {
         infoTableView.register(ChargerInfoTableViewCell.self, forCellReuseIdentifier: ChargerInfoTableViewCell.identifier)
     }
 }
-
-
-
 
 
 // MARK: - @objc func
@@ -59,7 +58,7 @@ extension MainPageViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return 0
+        return viewModel.numberOfRowsInSection
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -69,8 +68,6 @@ extension MainPageViewController: UITableViewDataSource {
         return cell
     }
 }
-
-
 
 
 // MARK: - UITableViewDelegate

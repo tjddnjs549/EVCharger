@@ -9,4 +9,9 @@ import Foundation
 
 public class MainViewModel {
     
+    
+    
+    var numberOfRowsInSection: Int {
+        return 1
+    }
 }
