@@ -9,14 +9,8 @@ import UIKit
 import SnapKit
 import Then
 
-final class MainPageViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        <#code#>
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        <#code#>
-    }
+final class MainPageViewController: UIViewController {
+   
     
     
     
@@ -43,7 +37,7 @@ private extension MainPageViewController {
     func tableviewSetting() {
         infoTableView.delegate = self
         infoTableView.dataSource = self
-        //self.register(MyPageTableViewCell.self, forCellReuseIdentifier: "")
+        infoTableView.register(ChargerInfoTableViewCell.self, forCellReuseIdentifier: ChargerInfoTableViewCell.identifier)
     }
 }
 
@@ -56,3 +50,34 @@ extension MainPageViewController {
     
     
 }
+
+
+// MARK: - UITableViewDataSource
+
+
+extension MainPageViewController: UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        return 0
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: ChargerInfoTableViewCell.identifier, for: indexPath) as! ChargerInfoTableViewCell
+        
+        return cell
+    }
+}
+
+
+
+
+// MARK: - UITableViewDelegate
+
+
+extension MainPageViewController: UITableViewDelegate {
+    
+    
+}
+
