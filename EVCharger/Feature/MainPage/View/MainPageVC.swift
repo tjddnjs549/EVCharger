@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import Then
+import Combine
 
 final class MainPageViewController: UIViewController {
     
@@ -15,8 +16,7 @@ final class MainPageViewController: UIViewController {
     // MARK: - properties
     
     public var viewModel: MainViewModel = MainViewModel()
-    var data: [ChargerInfo] = []
-    var searchResultData: [ChargerInfo] = []
+    var disposableBag = Set<AnyCancellable>()
     
     // MARK: - UIComponents
     
@@ -47,7 +47,7 @@ private extension MainPageViewController {
     func viewDidLoadSetting() {
         tableviewSetting()
         viewMakeUI()
-        networking()
+        viewModel.networking()
         naviBarSetting()
         searchBarSetting()
     }
@@ -87,21 +87,6 @@ private extension MainPageViewController {
     }
     
     
-    func networking() {
-        NetworkManager.shared.fetchVideo(completion: { result in
-            switch result {
-            case .success(let data):
-                self.data = data
-                DispatchQueue.main.async {
-                    self.infoTableView.reloadData()
-                }
-            case .failure:
-                print("테스트 - ERROR")
-            }
-        })
-    }
-    
-    
     func searchBarIsEmpty() -> Bool {
         return searchController.searchBar.text?.isEmpty ?? true
     }
@@ -110,6 +95,8 @@ private extension MainPageViewController {
     func isFiltering() -> Bool {
         return searchController.isActive && !searchBarIsEmpty()
     }
+    
+
 }
 
 
@@ -127,7 +114,7 @@ extension MainPageViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return isFiltering() ? self.searchResultData.count : self.data.count
+        return isFiltering() ? viewModel.searchResultData.count : viewModel.data.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -136,17 +123,17 @@ extension MainPageViewController: UITableViewDataSource {
         
         if isFiltering() {
             cell.dataBinding(
-                name: self.searchResultData[indexPath.row].placeName,
-                address: self.searchResultData[indexPath.row].address,
-                rapid: String(self.searchResultData[indexPath.row].rapid),
-                slow: String(self.searchResultData[indexPath.row].slow)
+                name: viewModel.searchResultData[indexPath.row].placeName,
+                address: viewModel.searchResultData[indexPath.row].address,
+                rapid: String(viewModel.searchResultData[indexPath.row].rapid),
+                slow: String(viewModel.searchResultData[indexPath.row].slow)
             )
         } else {
             cell.dataBinding(
-                name: self.data[indexPath.row].placeName,
-                address: self.data[indexPath.row].address,
-                rapid: String(self.data[indexPath.row].rapid),
-                slow: String(self.data[indexPath.row].slow)
+                name: viewModel.data[indexPath.row].placeName,
+                address: viewModel.data[indexPath.row].address,
+                rapid: String(viewModel.data[indexPath.row].rapid),
+                slow: String(viewModel.data[indexPath.row].slow)
             )
         }
         cell.selectionStyle = .none
@@ -172,7 +159,7 @@ extension MainPageViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
         print(searchText) // 글자를 입력할 때마다 보여줌
-        self.searchResultData = self.data.filter {
+        viewModel.searchResultData = viewModel.data.filter {
             $0.address.contains(searchText) ||  $0.placeName.contains(searchText)
         }
         DispatchQueue.main.async {

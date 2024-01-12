@@ -24,6 +24,7 @@ struct Datum: Codable {
     let slowCnt: Int
 }
 
+
 struct ChargerInfo: Codable {
     var placeName: String
     var address: String

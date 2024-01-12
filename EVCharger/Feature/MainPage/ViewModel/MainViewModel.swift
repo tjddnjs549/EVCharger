@@ -6,11 +6,26 @@
 //
 
 import Foundation
+import Combine
 
-public class MainViewModel {
+
+
+public class MainViewModel: ObservableObject {
+    
+    @Published var data: [ChargerInfo] = []
+    @Published var searchResultData: [ChargerInfo] = []
     
     
-    var numberOfRowsInSection: Int {
-        return 2
+    func networking() {
+        NetworkManager.shared.fetchVideo(completion: { result in
+            switch result {
+            case .success(let data):
+                self.data = data
+                
+            case .failure:
+                print("테스트 - ERROR")
+            }
+        })
     }
+    
 }
