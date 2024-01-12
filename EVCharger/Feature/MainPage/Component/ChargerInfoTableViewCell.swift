@@ -14,38 +14,28 @@ final class ChargerInfoTableViewCell: UITableViewCell {
     static let identifier = "ChargerInfoTableViewCell"
     
     // MARK: - CellUIProperties
-    lazy var nameLabel = UILabel().then {
-        $0.labelMakeUI(textColor: ColorGuide.blue, font: FontGuide.size24Bold, textAligment: .left)
-        $0.text = "nameLabel"
-        $0.layer.borderWidth = 1.0
-        $0.layer.borderColor = ColorGuide.black.cgColor
+    private lazy var nameLabel = UILabel().then {
+        $0.labelMakeUI(textColor: ColorGuide.blue.withAlphaComponent(0.8), font: FontGuide.size24Bold, textAligment: .left)
     }
     
     private lazy var addressLabel = UILabel().then {
         $0.labelMakeUI(textColor: ColorGuide.black, font: FontGuide.size19, textAligment: .left)
-        $0.text = "addressLabel"
-        $0.layer.borderWidth = 1.0
-        $0.layer.borderColor = ColorGuide.black.cgColor
     }
     
     private let rapidLabel = UILabel().then {
         $0.text = "rapid: "
         $0.labelMakeUI(textColor: ColorGuide.black, font: FontGuide.size16Bold, textAligment: .left)
-        $0.layer.borderWidth = 1.0
-        $0.layer.borderColor = ColorGuide.black.cgColor
     }
     
     private lazy var rapidCntLabel = UILabel().then {
         $0.labelMakeUI(textColor: ColorGuide.black, font: FontGuide.size16, textAligment: .left)
-        $0.layer.borderWidth = 1.0
-        $0.layer.borderColor = ColorGuide.black.cgColor
     }
     
     private lazy var rapidStackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [rapidLabel, rapidCntLabel])
         stack.spacing = 4
         stack.axis = .horizontal
-        stack.distribution = .fill
+        stack.distribution = .fillProportionally
         stack.alignment = .fill
         return stack
     }()
@@ -57,14 +47,10 @@ final class ChargerInfoTableViewCell: UITableViewCell {
     private let slowLabel = UILabel().then {
         $0.text = "slow: "
         $0.labelMakeUI(textColor: ColorGuide.black, font: FontGuide.size16Bold, textAligment: .left)
-        $0.layer.borderWidth = 1.0
-        $0.layer.borderColor = ColorGuide.black.cgColor
     }
     
     private lazy var slowCntLabel = UILabel().then {
         $0.labelMakeUI(textColor: ColorGuide.black, font: FontGuide.size16, textAligment: .left)
-        $0.layer.borderWidth = 1.0
-        $0.layer.borderColor = ColorGuide.black.cgColor
     }
     
     private lazy var slowStackView: UIStackView = {
@@ -95,7 +81,7 @@ final class ChargerInfoTableViewCell: UITableViewCell {
 }
 
 
-// MARK: - extension
+// MARK: - private extension func
 
 private extension ChargerInfoTableViewCell {
     
@@ -115,14 +101,14 @@ private extension ChargerInfoTableViewCell {
             make.leading.equalToSuperview().inset(10)
             make.top.equalTo(nameLabel.snp.bottom).offset(4)
             make.trailing.equalToSuperview().inset(10)
-            make.bottom.equalTo(rapidStackView.snp.top).offset(-20)
+            make.bottom.equalTo(rapidStackView.snp.top).offset(-10)
         }
         
         rapidStackView.snp.makeConstraints { make in
             make.leading.equalToSuperview().inset(10)
             make.trailing.equalTo(dividerView.snp.leading).offset(-10)
             make.bottom.equalToSuperview().inset(10)
-            make.width.equalTo(110)
+            make.width.equalTo(100)
         }
         
         dividerView.snp.makeConstraints { make in
@@ -136,5 +122,19 @@ private extension ChargerInfoTableViewCell {
             make.centerY.equalTo(rapidStackView.snp.centerY)
             make.width.equalTo(110)
         }
+    }
+}
+
+
+// MARK: - extension func
+
+
+extension ChargerInfoTableViewCell {
+    
+    func dataBinding(name: String, address: String, rapid: String, slow: String) {
+        self.nameLabel.text = name
+        self.addressLabel.text = address
+        self.rapidCntLabel.text = rapid
+        self.slowCntLabel.text = slow
     }
 }
