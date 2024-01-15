@@ -15,7 +15,7 @@ final class MainPageViewController: UIViewController {
     
     // MARK: - properties
     
-    public var viewModel: MainViewModel = MainViewModel()
+    private let viewModel: MainViewModel = MainViewModel()
     var disposableBag = Set<AnyCancellable>()
     
     // MARK: - UIComponents
@@ -37,6 +37,7 @@ final class MainPageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         viewDidLoadSetting()
+        
     }
 }
 
@@ -47,7 +48,11 @@ private extension MainPageViewController {
     func viewDidLoadSetting() {
         tableviewSetting()
         viewMakeUI()
-        viewModel.networking()
+        viewModel.networking {
+            DispatchQueue.main.async {
+                self.infoTableView.reloadData()
+            }
+        }
         naviBarSetting()
         searchBarSetting()
     }
@@ -122,20 +127,36 @@ extension MainPageViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: ChargerInfoTableViewCell.identifier, for: indexPath) as! ChargerInfoTableViewCell
         
         if isFiltering() {
-            cell.dataBinding(
-                name: viewModel.searchResultData[indexPath.row].placeName,
-                address: viewModel.searchResultData[indexPath.row].address,
-                rapid: String(viewModel.searchResultData[indexPath.row].rapid),
-                slow: String(viewModel.searchResultData[indexPath.row].slow)
-            )
+            self.viewModel.$searchResultData
+                .receive(on: DispatchQueue.main)
+                .sink { data in
+                    print("테스트 - \(data.count)")
+                    print("테스트1 - \(indexPath.row + 1)")
+                    if data.count <= indexPath.row {
+//                        cell.dataBinding(name: "loading",
+//                                         address: "loading",
+//                                         rapid: 0,
+//                                         slow: 0) ❗️
+                    } else {  //data.count > indexPath.row
+                        cell.dataBinding(name: data[indexPath.row].placeName,
+                                         address: data[indexPath.row].address,
+                                         rapid: data[indexPath.row].rapid,
+                                         slow: data[indexPath.row].slow)
+                    }
+                }
+                .store(in: &disposableBag)
         } else {
-            cell.dataBinding(
-                name: viewModel.data[indexPath.row].placeName,
-                address: viewModel.data[indexPath.row].address,
-                rapid: String(viewModel.data[indexPath.row].rapid),
-                slow: String(viewModel.data[indexPath.row].slow)
-            )
+            self.viewModel.$data
+                .sink { data in
+                    cell.dataBinding(name: data[indexPath.row].placeName,
+                                     address: data[indexPath.row].address,
+                                     rapid: data[indexPath.row].rapid,
+                                     slow: data[indexPath.row].slow
+                    )
+                }
+                .store(in: &disposableBag)
         }
+        
         cell.selectionStyle = .none
         return cell
     }

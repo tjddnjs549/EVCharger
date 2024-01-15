@@ -77,6 +77,10 @@ final class ChargerInfoTableViewCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        nameLabel.text = "loading..."
+        addressLabel.text = "loading..."
+        rapidCntLabel.text = "0"
+        slowCntLabel.text = "0"
     }
 }
 
@@ -131,10 +135,10 @@ private extension ChargerInfoTableViewCell {
 
 extension ChargerInfoTableViewCell {
     
-    func dataBinding(name: String, address: String, rapid: String, slow: String) {
+    func dataBinding(name: String, address: String, rapid: Int, slow: Int) {
         self.nameLabel.text = name
         self.addressLabel.text = address
-        self.rapidCntLabel.text = rapid
-        self.slowCntLabel.text = slow
+        self.rapidCntLabel.text = String(rapid)
+        self.slowCntLabel.text = String(slow)
     }
 }

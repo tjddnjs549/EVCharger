@@ -14,18 +14,21 @@ public class MainViewModel: ObservableObject {
     
     @Published var data: [ChargerInfo] = []
     @Published var searchResultData: [ChargerInfo] = []
+    var disposableBag = Set<AnyCancellable>()
     
-    
-    func networking() {
+    func networking(completion: @escaping () -> ()) {
         NetworkManager.shared.fetchVideo(completion: { result in
             switch result {
             case .success(let data):
                 self.data = data
-                
+                completion()
             case .failure:
                 print("테스트 - ERROR")
             }
         })
+        
     }
     
 }
+
+
